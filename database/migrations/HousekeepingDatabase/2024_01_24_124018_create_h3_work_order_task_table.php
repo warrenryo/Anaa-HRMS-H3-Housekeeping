@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('h3_items_services');
             $table->string('h3_by_admin')->nullable();
             $table->string('h3_additional_request')->nullable();
+            $table->string('h3_proof_image')->nullable();
             $table->string('h3_status');
             $table->timestamps();
         });

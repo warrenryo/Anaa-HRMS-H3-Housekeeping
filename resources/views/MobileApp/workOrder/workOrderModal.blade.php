@@ -120,6 +120,11 @@
                         REQUESTS</label>
                     <textarea readonly id="hs-about-hire-us-2" name="hs-about-hire-us-2" rows="4" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600">@if($task->h3_additional_request == null) No request found @else{{$task->h3_additional_request}} @endif</textarea>
                 </div>
+
+                <div class="mt-6">
+                <label for="hs-about-hire-us-2" class="block mb-2 text-xs text-gray-500 dark:text-white">PROOF OF COMPLETION</label>
+                <img src="{{ asset($task->h3_proof_image) }}" alt="">
+                </div>
             </div>
 
             <div class="flex justify-end items-center gap-x-2 py-3 px-4 dark:border-gray-700">

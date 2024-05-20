@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DigitalRequestController;
+use App\Http\Controllers\Housekeeping\AdminHousekeeperReports;
 use App\Http\Controllers\Housekeeping\DashboardController;
 use App\Http\Controllers\Housekeeping\DoorLockController;
 use App\Http\Controllers\Inventory\InventoryCategoryController;
@@ -30,6 +31,7 @@ use App\Http\Controllers\Maintenance\MaintenanceProgressController;
 use App\Http\Controllers\Maintenance\MaintenanceRequestController;
 use App\Http\Controllers\Maintenance\MaintenanceWorkOrderController;
 use App\Http\Controllers\MobileApp\AppDashboardController;
+use App\Http\Controllers\MobileApp\AppReportController;
 use App\Http\Controllers\MobileApp\AppWorkOrderController;
 use App\Http\Controllers\MobileApp\Maintenance\MaintenanceWorkOrderAppController;
 use App\Models\HousekeepingModel\HousekeepingRequest;
@@ -96,6 +98,11 @@ Route::prefix('housekeeper')->middleware(['auth', 'verified'])->group(function (
     Route::get('accept-update-status/{id}', [AppWorkOrderController::class, 'updateStatus']);
     Route::get('mark-as-completed/{id}', [AppWorkOrderController::class, 'markAsCompleted']);
     Route::get('completed-task', [AppWorkOrderController::class, 'completedTaskIndex']);
+    Route::put('report-completed/{id}', [AppWorkOrderController::class, 'reportCompleted']);
+    
+    //reports
+    Route::get('create-report', [AppReportController::class, 'index']);
+    Route::post('submit-report', [AppReportController::class, 'submitReport']);
 });
 
 //MAINTENANCE MOBILE APP ROUTE
@@ -153,6 +160,9 @@ Route::middleware(['auth', 'housekeeping'])->group(function () {
 
         //ADMIN WORK ORDER
         Route::post('submit-work-order-admin', [HousekeepingWorkOrdersController::class, 'adminWorkOrder']);
+    
+        //Housekeeper Report
+        Route::get('housekeeper-reports', [AdminHousekeeperReports::class, 'housekeeperReports']);
     });
 });
 

@@ -8,6 +8,7 @@ use App\Http\Controllers\API\HOTEL1APIController;
 use App\Http\Controllers\API\MobileAPIController;
 use App\Http\Controllers\API\APILogisticsController;
 use App\Http\Controllers\API\HousekeepingDoorLockController;
+use App\Http\Controllers\SuperAdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -78,3 +79,9 @@ Route::get('door-keys', [HousekeepingDoorLockController::class, 'doorKeys']);
 
 //LOGISTICS
 Route::post('logistics', [APILogisticsController::class, 'logistics']);
+
+
+//FROM SUPER ADMIN
+Route::post('super-add-user', [SuperAdminController::class, 'addUsers']);
+Route::post('super-edit-user', [SuperAdminController::class, 'editUsers']);
+Route::post('super-delete-user', [SuperAdminController::class, 'deleteUsers']);

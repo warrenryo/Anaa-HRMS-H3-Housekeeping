@@ -24,6 +24,7 @@ class HousekeepingWorkOrder extends Model
         'h3_items_services',
         'h3_by_admin',
         'h3_additional_request',
+        'h3_proof_image',
         'h3_status'
     ];
 

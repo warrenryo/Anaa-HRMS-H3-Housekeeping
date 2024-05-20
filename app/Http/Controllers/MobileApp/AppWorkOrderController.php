@@ -51,21 +51,46 @@ class AppWorkOrderController extends Controller
     {
         $work_order = HousekeepingWorkOrder::find($id);
 
+        return view('MobileApp.workOrder.workOrderAttachedFile', compact('work_order'));
+    }
+
+    public function completedTaskIndex(Request $request)
+    {
+        $user_code = $request->user();
+        $work_order = HousekeepingWorkOrder::where('h3_status', 'Completed')->where('h3_housekeeper_code', $user_code->user_code)->with('workOrderItem')->orderBy('id', 'DESC')->paginate(5);
+        return view('MobileApp.completedTask.completedTaskIndex', compact('work_order'));
+    }
+
+    public function reportCompleted(Request $request, $id)
+    {
+        $work_order = HousekeepingWorkOrder::find($id);
         try {
             $new_status = 'Completed';
             if ($work_order) {
-                $work_order->update([
-                    'h3_status' => $new_status
-                ]);
+                
 
-                if($work_order->h3_by_admin == 'Yes'){
+                if($request->hasFile('image')){
+                    $file = $request->file('image');
+        
+                    $ext = $file->getClientOriginalExtension();
+                    $fileName = time().'.'.$ext;
+                    $file->move('uploads/proofImage/', $fileName);
+        
+                    $work_order->h3_proof_image = "uploads/proofImage/$fileName";
+                }
+
+                $work_order->h3_status = 'Completed';
+
+                $work_order->update();
+
+                if ($work_order->h3_by_admin == 'Yes') {
                     $status = 'Vacant';
-                    Http::post('http://192.168.45.85:8000/api/update-room-status',[
+                    Http::post('https://h1-reservation.anaa-hrms.com/api/update-room-status', [
                         'RoomNumber' => $work_order->h3_room_no,
                         'RoomStatus' => $status
                     ]);
                 }
-               
+
                 //send notification to admin
                 $currentTime = Carbon::now()->toTimeString();
                 $auth_user = User::where('role', 'Admin')->pluck('id');
@@ -73,7 +98,7 @@ class AppWorkOrderController extends Controller
                 Notification::send($notif_admin, new CompletedTaskNotification($work_order->h3_housekeeper_name, $work_order->h3_room_no, $currentTime));
 
                 Alert::success('Work Order has been Completed');
-                return redirect()->back();
+                return redirect('housekeeper/completed-task');
             } else {
                 Alert::error('Something went wrong');
                 return redirect()->back();
@@ -82,11 +107,5 @@ class AppWorkOrderController extends Controller
             Alert::error('Error', $th->getMessage());
             return redirect()->back();
         }
-    }
-
-    public function completedTaskIndex(Request $request){
-        $user_code = $request->user();
-        $work_order = HousekeepingWorkOrder::where('h3_status', 'Completed')->where('h3_housekeeper_code', $user_code->user_code)->with('workOrderItem')->orderBy('id', 'DESC')->paginate(5);
-        return view('MobileApp.completedTask.completedTaskIndex', compact('work_order'));
     }
 }

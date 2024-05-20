@@ -12,7 +12,7 @@ class RoomDetailsController extends Controller
 {
     public function index(){
         $housekeeper = User::where('role', 'Housekeeper')->get();
-        $room = Http::get('http://192.168.101.71:8000/api/room-details');
+        $room = Http::get('https://h1-reservation.anaa-hrms.com/api/room-details');
         
         if($room->successful()){
             $roomData = $room->json();
